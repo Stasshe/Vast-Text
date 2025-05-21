@@ -123,6 +123,34 @@ export class DocumentManager {
       console.error('ドキュメントの保存中にエラーが発生しました:', error);
     }
   }
+  
+  // 指定した名前でファイルをダウンロード保存
+  saveAsFile(content: string, filename: string): void {
+    // 拡張子がない場合は .txt を追加
+    if (!filename.includes('.')) {
+      filename = `${filename}.txt`;
+    }
+    
+    // Blobオブジェクトを作成
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    
+    // ダウンロードリンクを作成
+    const downloadLink = document.createElement('a');
+    downloadLink.href = URL.createObjectURL(blob);
+    downloadLink.download = filename;
+    
+    // 非表示でDOMに追加
+    document.body.appendChild(downloadLink);
+    
+    // リンクをクリック（ダウンロードを開始）
+    downloadLink.click();
+    
+    // 不要になったらDOMから削除
+    document.body.removeChild(downloadLink);
+    
+    // BlobオブジェクトのURLを解放
+    URL.revokeObjectURL(downloadLink.href);
+  }
 
   // ドキュメントの削除
   async deleteDocument(id: string): Promise<void> {

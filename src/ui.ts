@@ -21,6 +21,27 @@ export function setupUIListeners(
       }
     });
   }
+  
+  // 名前を付けて保存ボタンのイベント
+  const saveAsBtn = document.getElementById('save-as-btn');
+  if (saveAsBtn) {
+    saveAsBtn.addEventListener('click', () => {
+      // 現在のドキュメントのタイトルを取得
+      const currentDoc = documentManager.getCurrentDocument();
+      const defaultFilename = currentDoc ? currentDoc.title : '新しいドキュメント';
+      
+      // ファイル名の入力プロンプトを表示
+      const filename = prompt('保存するファイル名を入力してください (拡張子を含めることができます):', defaultFilename);
+      
+      if (filename) {
+        // エディタの内容を取得
+        const content = view.state.doc.toString();
+        
+        // ファイルとして保存
+        documentManager.saveAsFile(content, filename);
+      }
+    });
+  }
 
   // サイドバー切り替えボタンのイベント
   const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
@@ -197,10 +218,7 @@ export function setupUIListeners(
         if (counterContainer) {
           counterContainer.classList.remove('minimized');
           
-          // 3秒後に最小化
-          setTimeout(() => {
-            counterContainer.classList.add('minimized');
-          }, 3000);
+          
         }
       }
     }
