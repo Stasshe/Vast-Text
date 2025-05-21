@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   server: {
-    port: 3038,
+    port: 3036,
     hmr: {
       overlay: true,
     },

@@ -86,7 +86,7 @@ export const moveLineDown = (view: EditorView): boolean => {
   return true;
 };
 
-// 検索・置換パネルを開くコマンド - スクロール抑制付き
+// 検索・置換パネルを開くコマンド - 上部に表示
 export const openReplacePanel = (view: EditorView): boolean => {
   // 現在のスクロール位置を保存
   const scrollPos = view.scrollDOM.scrollTop;
@@ -99,9 +99,10 @@ export const openReplacePanel = (view: EditorView): boolean => {
     // スクロール位置を復元
     view.scrollDOM.scrollTop = scrollPos;
     
-    // 置換パネルを表示
+    // 置換パネルを表示して上部に配置
     const searchPanel = view.dom.querySelector(".cm-search");
     if (searchPanel) {
+      // 置換パネルを表示
       const replaceButton = searchPanel.querySelector(".cm-button[name=replace]");
       if (replaceButton instanceof HTMLElement) {
         replaceButton.click();
@@ -109,6 +110,10 @@ export const openReplacePanel = (view: EditorView): boolean => {
       
       // クラスを追加してスタイルを適用
       searchPanel.classList.add('float-panel-adjusted');
+      
+      // 明示的に上部に配置
+      (searchPanel as HTMLElement).style.top = '10px';
+      (searchPanel as HTMLElement).style.position = 'fixed';
     }
   }, 10);
   

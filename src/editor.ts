@@ -140,11 +140,16 @@ export function setupEditor(documentManager: DocumentManager) {
         }
       }
       
-      // 検索パネルを調整
+      // 検索パネルを上部に調整
       setTimeout(() => {
         const searchPanel = document.querySelector('.cm-search');
         if (searchPanel && !searchPanel.classList.contains('float-panel-adjusted')) {
           searchPanel.classList.add('float-panel-adjusted');
+          // 明示的に上部に配置
+          if (searchPanel instanceof HTMLElement) {
+            searchPanel.style.top = '10px';
+            searchPanel.style.position = 'fixed';
+          }
         }
         
         // ツールチップやポップアップメニューもフロート表示に調整
