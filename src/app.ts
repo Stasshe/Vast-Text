@@ -60,6 +60,9 @@ async function initApp() {
   setupCharacterCounter();
 }
 
+// 文字数カウンターのタイマーID
+let charCounterTimerId: number | null = null;
+
 // 文字数カウンターの初期化
 function setupCharacterCounter() {
   const counterContainer = document.getElementById('character-counter');
@@ -69,11 +72,6 @@ function setupCharacterCounter() {
   counterContainer.addEventListener('click', () => {
     counterContainer.classList.toggle('minimized');
   });
-  
-  // 初期状態では3秒後に最小化
-  setTimeout(() => {
-    counterContainer.classList.add('minimized');
-  }, 3000);
   
   // 初期文字数を表示
   updateCharacterCount();
@@ -88,19 +86,32 @@ function updateCharacterCount() {
   
   const content = currentDoc.content || '';
   const charCounter = document.getElementById('chars-count');
+  const charLabel = document.getElementById('chars-label');
   
   if (charCounter) {
     charCounter.textContent = content.length.toLocaleString();
+    
+    // 通常モードでラベルを設定
+    if (charLabel) {
+      charLabel.textContent = '文字';
+    }
     
     // カウンターを表示
     const counterContainer = document.getElementById('character-counter');
     if (counterContainer) {
       counterContainer.classList.remove('minimized');
       
-      // 3秒後に最小化
-      setTimeout(() => {
+      // 既存のタイマーがあればクリア
+      if (charCounterTimerId !== null) {
+        clearTimeout(charCounterTimerId);
+        charCounterTimerId = null;
+      }
+      
+      // 30秒後に最小化
+      charCounterTimerId = window.setTimeout(() => {
         counterContainer.classList.add('minimized');
-      }, 3000);
+        charCounterTimerId = null;
+      }, 30000);
     }
   }
 }

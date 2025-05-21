@@ -95,12 +95,39 @@ export function setupEditor(documentManager: DocumentManager) {
   // シンタックスハイライトの拡張機能を格納する変数
   const syntaxHighlightExtension = syntaxHighlighting(darkHighlightStyle);
   
+  // 文字数カウンターのタイマーID
+  let counterTimerId: number | null = null;
+  
   // 文字数を更新する関数
-  const updateCharacterCount = (content: string) => {
+  const updateCharacterCount = (content: string, view?: EditorView) => {
     const charCounter = document.getElementById('chars-count');
+    const charLabel = document.getElementById('chars-label');
+    
     if (charCounter) {
-      // 改行を含めた文字数をカウント
-      const count = content.length;
+      // 選択範囲があるかチェック
+      let count = content.length;
+      let hasSelection = false;
+      
+      if (view) {
+        const selection = view.state.selection.main;
+        if (!selection.empty) {
+          // 選択範囲がある場合は選択文字数をカウント
+          count = selection.to - selection.from;
+          hasSelection = true;
+          
+          // ラベルを更新
+          if (charLabel) {
+            charLabel.textContent = '文字選択中';
+          }
+        } else {
+          // 選択がない場合は合計文字数
+          if (charLabel) {
+            charLabel.textContent = '文字';
+          }
+        }
+      }
+      
+      // カウンターの値を更新
       charCounter.textContent = count.toLocaleString();
       
       // カウンターを表示
@@ -108,10 +135,20 @@ export function setupEditor(documentManager: DocumentManager) {
       if (counterContainer) {
         counterContainer.classList.remove('minimized');
         
-        // 3秒後に最小化
-        setTimeout(() => {
-          counterContainer.classList.add('minimized');
-        }, 3000);
+        // 選択中は最小化しない、選択がない場合は30秒後に最小化
+        if (!hasSelection) {
+          // 既存のタイマーがあればクリア
+          if (counterTimerId !== null) {
+            clearTimeout(counterTimerId);
+            counterTimerId = null;
+          }
+          
+          // 新しいタイマーを設定
+          counterTimerId = window.setTimeout(() => {
+            counterContainer.classList.add('minimized');
+            counterTimerId = null;
+          }, 30000);
+        }
       }
     }
   };
@@ -188,7 +225,7 @@ export function setupEditor(documentManager: DocumentManager) {
         documentManager.saveCurrentDocument(content);
         
         // 文字数カウンターを更新
-        updateCharacterCount(content);
+        updateCharacterCount(content, update.view);
         
         // ミニマップを更新
         try {
@@ -197,6 +234,12 @@ export function setupEditor(documentManager: DocumentManager) {
         } catch (error) {
           console.error('ミニマップの更新中にエラーが発生しました:', error);
         }
+      }
+      
+      // 選択範囲の変更を検知
+      if (update.selectionSet) {
+        const content = update.state.doc.toString();
+        updateCharacterCount(content, update.view);
       }
       
       // 検索パネルを上部に調整
