@@ -21,6 +21,14 @@
       margin: 0;
       padding: 0;
       height: 100%;
+      overflow: hidden !important;
+      position: fixed;
+      width: 100%;
+    }
+
+    #app {
+      height: 100vh;
+      max-height: 100vh;
       overflow: hidden;
     }
 
@@ -54,7 +62,7 @@
     }
 
     .dark .cm-cursor {
-      border-left-color: #fff !important;
+      border-left-color: #38bdf8 !important; /* 水色に変更 */
     }
 
     .cm-focused {
@@ -116,11 +124,12 @@
     }
   </style>
   <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/fix.css">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-  <div id="app" class="h-screen flex flex-col">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 fix-scroll overflow-hidden">
+  <div id="app" class="h-screen flex flex-col overflow-hidden">
     <header class="bg-white dark:bg-gray-800 shadow-sm">
       <div class="container mx-auto px-4 py-3 flex items-center justify-between">
         <h1 class="text-xl font-bold">Vast-Text Editor</h1>
@@ -130,6 +139,9 @@
           </button>
           <button id="toggle-sidebar-btn" class="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">
             サイドバー切替
+          </button>
+          <button id="toggle-theme-btn" class="px-3 py-1 bg-gray-200 dark:bg-blue-500 rounded hover:bg-gray-300 dark:hover:bg-blue-600">
+            テーマ切替
           </button>
         </div>
       </div>

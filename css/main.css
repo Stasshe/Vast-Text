@@ -37,8 +37,11 @@ html, body {
   50% { opacity: 0; }
 }
 
-.dark .cm-cursor {
-  border-left-color: #fff !important;
+.dark .cm-cursor,
+html[class~="dark"] .cm-cursor,
+body.dark-mode .cm-cursor {
+  border-left: 1.5px solid #38bdf8 !important; /* 水色に変更、線を太く */
+  box-shadow: 0 0 2px #38bdf8 !important; /* 光るエフェクト */
 }
 
 .cm-focused {

@@ -4,7 +4,10 @@ import { DocumentManager } from './document-manager';
 // UIイベントリスナーのセットアップ
 export function setupUIListeners(
   documentManager: DocumentManager, 
-  editor: { updateContent: (content: string) => void }, 
+  editor: { 
+    updateContent: (content: string) => void,
+    updateEditorStyles?: (darkMode: boolean) => void
+  }, 
   view: EditorView
 ): void {
   // 新規ドキュメントボタンのイベント
@@ -24,6 +27,67 @@ export function setupUIListeners(
   if (toggleSidebarBtn && sidebar) {
     toggleSidebarBtn.addEventListener('click', () => {
       sidebar.classList.toggle('hidden');
+    });
+  }
+
+  // エディタのテーマを更新する関数
+  function updateEditorTheme(isDarkMode: boolean, view: EditorView): void {
+    if (editor.updateEditorStyles) {
+      // エディタ側の実装を使用する
+      editor.updateEditorStyles(isDarkMode);
+    } else {
+      // フォールバック実装（エディタ側の実装がない場合）
+      const editorElement = document.getElementById("editor");
+      
+      if (editorElement) {
+        if (isDarkMode) {
+          editorElement.style.backgroundColor = "#1f2937";
+          editorElement.style.color = "#e5e7eb";
+        } else {
+          editorElement.style.backgroundColor = "#fff";
+          editorElement.style.color = "#000";
+        }
+      }
+      
+      // カーソルスタイルの更新
+      const cursorElements = document.querySelectorAll(".cm-cursor");
+      cursorElements.forEach(cursorEl => {
+        if (cursorEl instanceof HTMLElement) {
+          if (isDarkMode) {
+            cursorEl.style.borderLeftColor = "#38bdf8";
+            cursorEl.style.borderLeftWidth = "1.5px";
+            cursorEl.style.boxShadow = "0 0 2px #38bdf8";
+          } else {
+            cursorEl.style.borderLeftColor = "#000";
+            cursorEl.style.borderLeftWidth = "1.2px";
+            cursorEl.style.boxShadow = "none";
+          }
+        }
+      });
+    }
+  }
+
+  // テーマ切り替えボタンのイベント
+  const toggleThemeBtn = document.getElementById('toggle-theme-btn');
+  if (toggleThemeBtn) {
+    toggleThemeBtn.addEventListener('click', () => {
+      const isDarkMode = document.documentElement.classList.contains('dark');
+      
+      if (isDarkMode) {
+        // ライトモードに切り替え
+        document.documentElement.classList.remove('dark');
+        document.body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+      } else {
+        // ダークモードに切り替え
+        document.documentElement.classList.add('dark');
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+      }
+      
+      // エディタの見た目を更新する
+      const newDarkMode = !isDarkMode;
+      updateEditorTheme(newDarkMode, view);
     });
   }
 

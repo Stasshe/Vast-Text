@@ -1,0 +1,21 @@
+/* Tailwindユーティリティクラス拡張 */
+.overflow-hidden-all {
+  overflow: hidden !important;
+}
+
+/* body全体にoverflow: hiddenを強制 */
+body.fix-scroll {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* CodeMirrorカーソルのダークモードスタイル強化 */
+html[class~="dark"] .cm-cursor, 
+.dark .cm-cursor, 
+body.dark-mode .cm-cursor,
+.dark-mode .cm-cursor {
+  border-left: 1.5px solid #38bdf8 !important; /* 水色に変更、線を太く */
+  box-shadow: 0 0 2px #38bdf8 !important; /* 光るエフェクト */
+}
