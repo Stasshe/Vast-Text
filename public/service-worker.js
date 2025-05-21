@@ -1,5 +1,7 @@
 
 // service-worker.js
+
+//add favicon
 const CACHE_NAME = 'vast-text-v1';
 const urlsToCache = [
   '/',
