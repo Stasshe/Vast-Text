@@ -25,7 +25,12 @@ export function setupEditor(documentManager: DocumentManager) {
         documentManager.saveCurrentDocument(content);
         
         // ミニマップを更新
-        updateMinimap(update.view);
+        try {
+          const event = new CustomEvent('editor-content-changed', { detail: { view: update.view } });
+          document.dispatchEvent(event);
+        } catch (error) {
+          console.error('ミニマップの更新中にエラーが発生しました:', error);
+        }
       }
     }),
     EditorView.theme({

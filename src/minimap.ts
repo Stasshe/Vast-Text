@@ -5,12 +5,16 @@ export function setupMinimap(editorView: EditorView) {
   const minimapEl = document.getElementById('minimap');
   if (!minimapEl) return;
   
+  let editorInstance: EditorView;
+  
   // 初期化時にミニマップを更新
+  editorInstance = editorView;
   updateMinimap(editorView);
   
   // エディタの内容が変更されたらミニマップを更新
   document.addEventListener('editor-content-changed', ((e: CustomEvent) => {
     updateMinimap(e.detail.view);
+    editorInstance = e.detail.view;
   }) as EventListener);
   
   // エディタのスクロールイベントでミニマップのハイライト位置を更新
@@ -25,15 +29,65 @@ export function setupMinimap(editorView: EditorView) {
   minimapEl.addEventListener('click', (e) => {
     if (!editorEl) return;
     
-    const minimapHeight = minimapEl.clientHeight;
+    const minimapRect = minimapEl.getBoundingClientRect();
+    const minimapHeight = minimapRect.height;
     const editorHeight = editorEl.scrollHeight;
     
-    const clickY = e.clientY - minimapEl.getBoundingClientRect().top;
-    const ratio = clickY / minimapHeight;
+    // クリック位置を計算
+    const clickY = e.clientY - minimapRect.top;
+    const ratio = Math.max(0, Math.min(1, clickY / minimapHeight));
     
-    const targetScrollTop = ratio * editorHeight;
+    // ターゲットスクロール位置を計算して設定
+    const maxScrollTop = editorHeight - editorEl.clientHeight;
+    const targetScrollTop = ratio * maxScrollTop;
     editorEl.scrollTop = targetScrollTop;
+    
+    // イベントを処理したことを示す
+    e.preventDefault();
+    e.stopPropagation();
   });
+  
+  // ミニマップドラッグでスクロール
+  let isDragging = false;
+  
+  minimapEl.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    handleMinimapDrag(e);
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      handleMinimapDrag(e);
+    }
+  });
+  
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+  
+  function handleMinimapDrag(e: MouseEvent) {
+    if (!editorEl) return;
+    
+    const minimapRect = minimapEl!.getBoundingClientRect();
+    const minimapHeight = minimapRect.height;
+    const editorHeight = editorEl.scrollHeight;
+    
+    // ドラッグ位置を計算
+    const dragY = Math.max(0, Math.min(minimapHeight, e.clientY - minimapRect.top));
+    const ratio = dragY / minimapHeight;
+    
+    // ターゲットスクロール位置を計算して設定
+    const maxScrollTop = editorHeight - editorEl.clientHeight;
+    const targetScrollTop = ratio * maxScrollTop;
+    editorEl.scrollTop = targetScrollTop;
+    
+    // ミニマップハイライトを更新
+    updateMinimapHighlight(editorInstance);
+    
+    // イベントを処理したことを示す
+    e.preventDefault();
+    e.stopPropagation();
+  }
 }
 
 // ミニマップの内容を更新
@@ -89,14 +143,25 @@ function updateMinimapHighlight(view: EditorView) {
     minimapEl.appendChild(cursor);
   }
   
-  // スクロール位置に応じてカーソル位置を更新
-  const scrollRatio = editorEl.scrollTop / (editorEl.scrollHeight - editorEl.clientHeight);
-  const minimapScrollableHeight = minimapEl.scrollHeight - minimapEl.clientHeight;
+  // スクロール位置の計算
+  const scrollTop = editorEl.scrollTop;
+  const scrollHeight = editorEl.scrollHeight;
+  const containerHeight = editorEl.clientHeight;
   
+  // スクロール比率の計算（0〜1の範囲）
+  let scrollRatio = 0;
+  if (scrollHeight > containerHeight) {
+    scrollRatio = scrollTop / (scrollHeight - containerHeight);
+  }
+  
+  // ミニマップでの表示可能エリアの比率
   const minimapHeight = minimapEl.clientHeight;
-  const visibleRatio = editorEl.clientHeight / editorEl.scrollHeight;
+  const visibleRatio = Math.min(1, containerHeight / scrollHeight);
   
   // カーソルの高さと位置を設定
-  (cursor as HTMLElement).style.height = `${minimapHeight * visibleRatio}px`;
-  (cursor as HTMLElement).style.top = `${scrollRatio * minimapScrollableHeight}px`;
+  const cursorHeight = Math.max(30, minimapHeight * visibleRatio);
+  const cursorTop = (minimapHeight - cursorHeight) * scrollRatio;
+  
+  (cursor as HTMLElement).style.height = `${cursorHeight}px`;
+  (cursor as HTMLElement).style.top = `${cursorTop}px`;
 }

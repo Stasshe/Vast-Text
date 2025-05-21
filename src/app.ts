@@ -5,6 +5,8 @@ import { setupMinimap } from './minimap';
 
 // アプリケーションの初期化
 async function initApp() {
+  console.log('アプリケーションを初期化しています...');
+  
   // ドキュメント管理機能の初期化
   const documentManager = new DocumentManager();
   await documentManager.initialize();

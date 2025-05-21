@@ -16,15 +16,48 @@ html, body {
   padding: 12px;
   height: 100%;
   overflow: auto;
+  background-color: #fff;
+}
+
+.dark #editor {
+  background-color: #1f2937;
+  color: #e5e7eb;
+}
+
+/* CodeMirrorカーソルスタイル */
+.cm-cursor {
+  border-left: 1.2px solid #000 !important;
+  visibility: visible !important;
+  margin-left: -0.6px;
+  animation: blink 1.2s step-end infinite !important;
+}
+
+@keyframes blink {
+  from, to { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.dark .cm-cursor {
+  border-left-color: #fff !important;
+}
+
+.cm-focused {
+  outline: none !important;
 }
 
 /* ミニマップスタイル */
 #minimap {
   font-size: 2px;
   line-height: 2px;
-  opacity: 0.6;
+  opacity: 0.7;
   overflow: hidden;
   border-left: 1px solid #e5e7eb;
+  position: relative;
+  cursor: pointer;
+}
+
+.dark #minimap {
+  border-left-color: #4b5563;
 }
 
 /* サイドバーアイテムスタイル */
@@ -71,4 +104,17 @@ html, body {
   width: 20px;
   background-color: rgba(59, 130, 246, 0.3);
   pointer-events: none;
+  border-radius: 2px 0 0 2px;
+  z-index: 10;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.dark .minimap-cursor {
+  background-color: rgba(96, 165, 250, 0.4);
+  box-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+/* ミニマップライン */
+.minimap-line {
+  margin-bottom: 1px;
 }

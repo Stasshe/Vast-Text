@@ -2,7 +2,10 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   server: {
-    port: 3000
+    port: 3000,
+    hmr: {
+      overlay: true,
+    },
   },
   build: {
     outDir: 'dist',
@@ -11,5 +14,13 @@ export default defineConfig({
         main: 'index.html'
       }
     }
+  },
+  optimizeDeps: {
+    include: [
+      '@codemirror/state',
+      '@codemirror/view',
+      '@codemirror/commands',
+      'dexie'
+    ]
   }
 });
