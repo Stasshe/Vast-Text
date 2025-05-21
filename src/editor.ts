@@ -145,10 +145,25 @@ export function setupEditor(documentManager: DocumentManager) {
         const searchPanel = document.querySelector('.cm-search');
         if (searchPanel && !searchPanel.classList.contains('float-panel-adjusted')) {
           searchPanel.classList.add('float-panel-adjusted');
-          // 明示的に上部に配置
+          // 明示的に上部に配置と背景色を設定
           if (searchPanel instanceof HTMLElement) {
-            searchPanel.style.top = '10px';
+            searchPanel.style.top = '50px';
             searchPanel.style.position = 'fixed';
+            searchPanel.style.backgroundColor = 'white';
+            
+            // すべての子要素にも白背景を適用
+            const elements = searchPanel.querySelectorAll('*');
+            elements.forEach(el => {
+              if (el instanceof HTMLElement) {
+                if (el.tagName === 'BUTTON') {
+                  el.style.backgroundColor = '#f0f0f0';
+                  el.style.color = '#333';
+                } else {
+                  el.style.backgroundColor = 'white';
+                  el.style.color = '#333';
+                }
+              }
+            });
           }
         }
         

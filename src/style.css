@@ -1,4 +1,4 @@
-/* 検索パネルのフロート表示 - 位置とスタイルを改善 */
+/* 検索パネルのフロート表示 - 白背景を追加 */
 .cm-search {
   position: fixed !important;
   top: 50px !important; /* メニューバーの下に配置 */
@@ -7,72 +7,55 @@
   z-index: 1100;
   max-width: 90%;
   width: 500px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   border-radius: 8px;
-  background-color: #fff !important; /* 白背景に変更 */
-  color: #333 !important; /* テキストを暗い色に */
-  border: 1px solid #ddd;
-  padding: 5px;
+  background-color: white !important; /* 白い背景 */
+  color: #333 !important;
+  border: 1px solid #ccc;
 }
 
-/* 検索パネルに閉じるボタンを追加 */
-.cm-search::after {
-  content: "×";
-  position: absolute;
-  top: 5px;
-  right: 10px;
-  font-size: 18px;
-  color: #666;
-  cursor: pointer;
-  width: 20px;
-  height: 20px;
-  text-align: center;
-  line-height: 20px;
-  border-radius: 50%;
-}
-
-.cm-search::after:hover {
-  background-color: #eee;
+/* 検索パネル内の全要素に背景色を設定 */
+.cm-search * {
+  background-color: white;
   color: #333;
 }
 
-/* 検索パネルの入力フィールドとボタンのスタイル調整 */
-.cm-search input, .cm-search select {
-  background-color: #fff;
-  color: #333;
+/* 検索パネルのコンテンツ領域 */
+.cm-search .cm-searchPanel {
+  padding: 10px;
+  font-size: 14px;
+  background-color: white !important;
+}
+
+/* 検索パネルの入力欄 */
+.cm-search input {
+  background-color: white !important;
+  color: #333 !important;
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 4px 8px;
 }
 
+/* 検索パネルのボタン */
 .cm-search button {
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: #f0f0f0 !important;
+  color: #333 !important;
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 4px 10px;
   margin: 0 2px;
-  cursor: pointer;
 }
 
+/* 検索パネルのボタンホバー効果 */
 .cm-search button:hover {
-  background-color: #e0e0e0;
+  background-color: #e0e0e0 !important;
 }
 
-/* 検索パネルの中身のスタイル */
-.cm-search .cm-searchPanel {
-  padding: 10px;
-  font-size: 14px;
-  color: #333;
-}
-
-.cm-search .cm-textfield {
-  margin-bottom: 8px;
-}
-
-/* フロート表示で常に上部に表示されるようにする - 位置を調整 */
-.float-panel-adjusted {
-  top: 50px !important;
+/* メニューコンテナの白背景 */
+.menu-container {
+  background-color: white !important; /* 白い背景を確実に適用 */
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* メニューのフロート表示 - 白背景に変更 */
@@ -102,7 +85,7 @@
   padding: 8px 12px;
   font-size: 16px;
   touch-action: manipulation;
-  background-color: #f5f5f5;
+  background-color: #f0f0f0;
   color: #333;
   border: 1px solid #ccc;
   border-radius: 4px;

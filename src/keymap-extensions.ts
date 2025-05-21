@@ -86,7 +86,7 @@ export const moveLineDown = (view: EditorView): boolean => {
   return true;
 };
 
-// 検索・置換パネルを開くコマンド - 改善版
+// 検索・置換パネルを開くコマンド
 export const openReplacePanel = (view: EditorView): boolean => {
   // 現在のスクロール位置を保存
   const scrollPos = view.scrollDOM.scrollTop;
@@ -115,8 +115,28 @@ export const openReplacePanel = (view: EditorView): boolean => {
       if (searchPanel instanceof HTMLElement) {
         searchPanel.style.top = '50px';
         searchPanel.style.position = 'fixed';
-        searchPanel.style.backgroundColor = '#fff';
+        searchPanel.style.backgroundColor = 'white';
         searchPanel.style.color = '#333';
+        searchPanel.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+        searchPanel.style.border = '1px solid #ccc';
+        
+        // すべての子要素に白背景を適用
+        const elements = searchPanel.querySelectorAll('*');
+        elements.forEach(el => {
+          if (el instanceof HTMLElement) {
+            if (el.tagName === 'BUTTON') {
+              el.style.backgroundColor = '#f0f0f0';
+              el.style.color = '#333';
+            } else if (el.tagName === 'INPUT' || el.tagName === 'SELECT') {
+              el.style.backgroundColor = 'white';
+              el.style.color = '#333';
+              el.style.border = '1px solid #ccc';
+            } else {
+              el.style.backgroundColor = 'white';
+              el.style.color = '#333';
+            }
+          }
+        });
         
         // 閉じるボタンの機能を追加
         const closeBtn = document.createElement('div');
