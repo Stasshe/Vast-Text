@@ -4,8 +4,9 @@ import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { autocompletion, startCompletion, closeBrackets, completionKeymap } from '@codemirror/autocomplete';
 import { javascript } from '@codemirror/lang-javascript';
 import { indentOnInput, syntaxHighlighting, defaultHighlightStyle, bracketMatching, foldGutter } from '@codemirror/language';
+import { search, searchKeymap } from '@codemirror/search';
 import { DocumentManager } from './document-manager';
-import { moveLineUp, moveLineDown } from './keymap-extensions';
+import { moveLineUp, moveLineDown, openReplacePanel } from './keymap-extensions';
 
 // ダークモード検出
 export const isDarkMode = () => {
@@ -64,6 +65,8 @@ export function setupEditor(documentManager: DocumentManager) {
     lineNumbers(),
     highlightActiveLineGutter(),
     history(),
+    // 検索・置換機能を追加
+    search(),
     // 自動補完の設定
     autocompletion({
       activateOnTyping: true, // タイプ中にアクティブ化
@@ -113,9 +116,12 @@ export function setupEditor(documentManager: DocumentManager) {
       ...defaultKeymap,
       ...historyKeymap,
       ...completionKeymap,
+      ...searchKeymap,
       // カスタムキーマップを追加
       { key: "Alt-ArrowUp", run: moveLineUp },
       { key: "Alt-ArrowDown", run: moveLineDown },
+      // 検索・置換パネルを開くキーバインド（Windows/Linux: Ctrl+Shift+F, Mac: Cmd+Shift+F）
+      { key: "Mod-Shift-f", run: openReplacePanel },
       // 自動補完のキーマップも追加
       { key: "Ctrl-Space", run: startCompletion }
     ]),
@@ -133,6 +139,22 @@ export function setupEditor(documentManager: DocumentManager) {
           console.error('ミニマップの更新中にエラーが発生しました:', error);
         }
       }
+      
+      // 検索パネルを調整
+      setTimeout(() => {
+        const searchPanel = document.querySelector('.cm-search');
+        if (searchPanel && !searchPanel.classList.contains('float-panel-adjusted')) {
+          searchPanel.classList.add('float-panel-adjusted');
+        }
+        
+        // ツールチップやポップアップメニューもフロート表示に調整
+        const tooltips = document.querySelectorAll('.cm-tooltip');
+        tooltips.forEach(tooltip => {
+          if (!tooltip.classList.contains('float-tooltip-adjusted')) {
+            tooltip.classList.add('float-tooltip-adjusted');
+          }
+        });
+      }, 0);
     }),
     // スムーススクロール設定と横スクロール改善
     EditorView.theme({
@@ -202,6 +224,24 @@ export function setupEditor(documentManager: DocumentManager) {
         // スクロール処理を安定させるため、ビューの更新をリクエスト
         view.requestMeasure();
         return false;
+      },
+      // 検索パネルの表示時にスクロールを防止
+      focusin(event, view) {
+        if (event.target instanceof HTMLElement && 
+            (event.target.closest('.cm-search') || 
+             event.target.closest('.cm-tooltip'))) {
+          // フォーカス時のスクロールを防止
+          setTimeout(() => {
+            view.scrollDOM.scrollIntoView();
+          }, 0);
+        }
+        return false;
+      }
+    }),
+    // メニューを考慮した下部の余白を追加
+    EditorView.theme({
+      ".cm-scroller": {
+        paddingBottom: "60px", // メニューの高さを考慮した余白
       }
     }),
   ];

@@ -1,5 +1,6 @@
 import { EditorView } from '@codemirror/view';
 import { EditorState, Transaction, ChangeSpec } from '@codemirror/state';
+import { openSearchPanel, SearchQuery } from '@codemirror/search';
 
 // 行を上に移動するコマンド
 export const moveLineUp = (view: EditorView): boolean => {
@@ -81,6 +82,35 @@ export const moveLineDown = (view: EditorView): boolean => {
     },
     scrollIntoView: true
   }));
+  
+  return true;
+};
+
+// 検索・置換パネルを開くコマンド - スクロール抑制付き
+export const openReplacePanel = (view: EditorView): boolean => {
+  // 現在のスクロール位置を保存
+  const scrollPos = view.scrollDOM.scrollTop;
+  
+  // 検索パネルを開く
+  openSearchPanel(view);
+  
+  // DOM更新後に実行
+  setTimeout(() => {
+    // スクロール位置を復元
+    view.scrollDOM.scrollTop = scrollPos;
+    
+    // 置換パネルを表示
+    const searchPanel = view.dom.querySelector(".cm-search");
+    if (searchPanel) {
+      const replaceButton = searchPanel.querySelector(".cm-button[name=replace]");
+      if (replaceButton instanceof HTMLElement) {
+        replaceButton.click();
+      }
+      
+      // クラスを追加してスタイルを適用
+      searchPanel.classList.add('float-panel-adjusted');
+    }
+  }, 10);
   
   return true;
 };

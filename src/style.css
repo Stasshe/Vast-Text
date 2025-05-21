@@ -1,0 +1,76 @@
+/* 検索パネルのフロート表示 */
+.cm-search {
+  position: fixed !important;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1100;
+  max-width: 90%;
+  width: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  background-color: #222;
+  color: #fff;
+}
+
+/* 検索パネルの入力フィールドと背景色を調整 */
+.cm-search input, .cm-search button {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+/* メニューのフロート表示 */
+.menu-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background-color: rgba(30, 30, 30, 0.8);
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 90%;
+  overflow-x: auto;
+}
+
+/* エディタのフロート要素のスタイル調整 */
+.cm-tooltip, .cm-tooltip-autocomplete, .cm-completionInfo {
+  position: fixed;
+  z-index: 1050;
+  background-color: #222 !important;
+  color: #fff !important;
+  border-color: #444 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* スクロール時もフロート要素を表示したままにする */
+body {
+  overflow-anchor: none; /* スクロールアンカー機能を無効化 */
+}
+
+/* モバイル向けにメニューの高さを確保 */
+@media (max-height: 600px) {
+  .menu-container {
+    bottom: 10px;
+  }
+  
+  /* エディタの下部にパディングを追加してメニューと被らないようにする */
+  #editor .cm-scroller {
+    padding-bottom: 70px;
+  }
+}
+
+/* タッチデバイス向けにボタンを大きくする */
+.menu-container button {
+  min-width: 40px;
+  min-height: 40px;
+  margin: 0 5px;
+  padding: 8px 12px;
+  font-size: 16px;
+  touch-action: manipulation;
+}
