@@ -86,7 +86,7 @@ export const moveLineDown = (view: EditorView): boolean => {
   return true;
 };
 
-// 検索・置換パネルを開くコマンド - 上部に表示
+// 検索・置換パネルを開くコマンド - 改善版
 export const openReplacePanel = (view: EditorView): boolean => {
   // 現在のスクロール位置を保存
   const scrollPos = view.scrollDOM.scrollTop;
@@ -99,7 +99,7 @@ export const openReplacePanel = (view: EditorView): boolean => {
     // スクロール位置を復元
     view.scrollDOM.scrollTop = scrollPos;
     
-    // 置換パネルを表示して上部に配置
+    // 置換パネルを表示して位置とスタイルを調整
     const searchPanel = view.dom.querySelector(".cm-search");
     if (searchPanel) {
       // 置換パネルを表示
@@ -111,9 +111,51 @@ export const openReplacePanel = (view: EditorView): boolean => {
       // クラスを追加してスタイルを適用
       searchPanel.classList.add('float-panel-adjusted');
       
-      // 明示的に上部に配置
-      (searchPanel as HTMLElement).style.top = '10px';
-      (searchPanel as HTMLElement).style.position = 'fixed';
+      // 明示的に位置を設定
+      if (searchPanel instanceof HTMLElement) {
+        searchPanel.style.top = '50px';
+        searchPanel.style.position = 'fixed';
+        searchPanel.style.backgroundColor = '#fff';
+        searchPanel.style.color = '#333';
+        
+        // 閉じるボタンの機能を追加
+        const closeBtn = document.createElement('div');
+        closeBtn.className = 'search-panel-close-btn';
+        closeBtn.textContent = '×';
+        closeBtn.style.position = 'absolute';
+        closeBtn.style.top = '5px';
+        closeBtn.style.right = '10px';
+        closeBtn.style.fontSize = '18px';
+        closeBtn.style.color = '#666';
+        closeBtn.style.cursor = 'pointer';
+        closeBtn.style.width = '20px';
+        closeBtn.style.height = '20px';
+        closeBtn.style.textAlign = 'center';
+        closeBtn.style.lineHeight = '20px';
+        closeBtn.style.borderRadius = '50%';
+        
+        closeBtn.addEventListener('click', () => {
+          // 検索パネルを閉じる
+          const closeButton = searchPanel.querySelector(".cm-button[name=close]");
+          if (closeButton instanceof HTMLElement) {
+            closeButton.click();
+          } else {
+            // バックアップ：検索パネルを非表示にする
+            searchPanel.style.display = 'none';
+          }
+        });
+        
+        // hover効果を追加
+        closeBtn.addEventListener('mouseover', () => {
+          closeBtn.style.backgroundColor = '#eee';
+        });
+        
+        closeBtn.addEventListener('mouseout', () => {
+          closeBtn.style.backgroundColor = 'transparent';
+        });
+        
+        searchPanel.appendChild(closeBtn);
+      }
     }
   }, 10);
   

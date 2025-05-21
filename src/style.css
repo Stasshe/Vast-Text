@@ -1,7 +1,7 @@
-/* 検索パネルのフロート表示 */
+/* 検索パネルのフロート表示 - 位置とスタイルを改善 */
 .cm-search {
   position: fixed !important;
-  top: 10px !important; /* 上部に配置 */
+  top: 50px !important; /* メニューバーの下に配置 */
   left: 50%;
   transform: translateX(-50%);
   z-index: 1100;
@@ -9,50 +9,107 @@
   width: 500px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  background-color: #222;
-  color: #fff;
+  background-color: #fff !important; /* 白背景に変更 */
+  color: #333 !important; /* テキストを暗い色に */
+  border: 1px solid #ddd;
+  padding: 5px;
 }
 
-/* 検索パネルの入力フィールドと背景色を調整 */
-.cm-search input, .cm-search button {
-  background-color: #333;
-  color: #fff;
-  border: 1px solid #444;
+/* 検索パネルに閉じるボタンを追加 */
+.cm-search::after {
+  content: "×";
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 18px;
+  color: #666;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 20px;
+  border-radius: 50%;
 }
 
-/* フロート表示で常に上部に表示されるようにする */
-.float-panel-adjusted {
-  top: 10px !important;
+.cm-search::after:hover {
+  background-color: #eee;
+  color: #333;
 }
 
-/* 検索パネルのボタンを見やすく */
+/* 検索パネルの入力フィールドとボタンのスタイル調整 */
+.cm-search input, .cm-search select {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
 .cm-search button {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
   padding: 4px 10px;
   margin: 0 2px;
+  cursor: pointer;
 }
 
-/* 検索パネルの中身をコンパクトに */
+.cm-search button:hover {
+  background-color: #e0e0e0;
+}
+
+/* 検索パネルの中身のスタイル */
 .cm-search .cm-searchPanel {
-  padding: 8px;
+  padding: 10px;
   font-size: 14px;
+  color: #333;
 }
 
-/* メニューのフロート表示 - 位置を調整 */
+.cm-search .cm-textfield {
+  margin-bottom: 8px;
+}
+
+/* フロート表示で常に上部に表示されるようにする - 位置を調整 */
+.float-panel-adjusted {
+  top: 50px !important;
+}
+
+/* メニューのフロート表示 - 白背景に変更 */
 .menu-container {
   position: fixed;
-  bottom: 150px; /* 画面最下部からさらに上に配置 */
+  bottom: 150px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  background-color: rgba(30, 30, 30, 0.8);
+  background-color: white; /* 白背景に変更 */
   border-radius: 8px;
   padding: 8px 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
   max-width: 90%;
   overflow-x: auto;
+  border: 1px solid #ddd;
+}
+
+/* メニュー内のボタンのスタイル */
+.menu-container button {
+  min-width: 40px;
+  min-height: 40px;
+  margin: 0 5px;
+  padding: 8px 12px;
+  font-size: 16px;
+  touch-action: manipulation;
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.menu-container button:hover {
+  background-color: #e0e0e0;
 }
 
 /* エディタのフロート要素のスタイル調整 */
@@ -80,14 +137,4 @@ body {
   #editor .cm-scroller {
     padding-bottom: 70px;
   }
-}
-
-/* タッチデバイス向けにボタンを大きくする */
-.menu-container button {
-  min-width: 40px;
-  min-height: 40px;
-  margin: 0 5px;
-  padding: 8px 12px;
-  font-size: 16px;
-  touch-action: manipulation;
 }
