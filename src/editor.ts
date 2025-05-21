@@ -1,6 +1,7 @@
 import { EditorState, Extension } from '@codemirror/state';
-import { EditorView, keymap, lineNumbers, highlightActiveLineGutter } from '@codemirror/view';
+import { EditorView, keymap, lineNumbers, highlightActiveLineGutter, scrollPastEnd } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
+import { autocompletion, startCompletion, closeBrackets } from '@codemirror/autocomplete';
 import { DocumentManager } from './document-manager';
 import { moveLineUp, moveLineDown } from './keymap-extensions';
 
@@ -61,12 +62,23 @@ export function setupEditor(documentManager: DocumentManager) {
     lineNumbers(),
     highlightActiveLineGutter(),
     history(),
+    // 自動補完の設定
+    autocompletion({
+      activateOnTyping: true, // タイプ中にアクティブ化
+      maxRenderedOptions: 10, // 表示される最大オプション数
+      defaultKeymap: true, // デフォルトのキーマップを使用
+      icons: true, // アイコンを表示
+    }),
+    // 閉じ括弧の自動挿入
+    closeBrackets(),
     keymap.of([
       ...defaultKeymap,
       ...historyKeymap,
       // カスタムキーマップを追加
       { key: "Alt-ArrowUp", run: moveLineUp },
-      { key: "Alt-ArrowDown", run: moveLineDown }
+      { key: "Alt-ArrowDown", run: moveLineDown },
+      // 自動補完のキーマップも追加
+      { key: "Ctrl-Space", run: startCompletion }
     ]),
     EditorView.updateListener.of(update => {
       if (update.docChanged) {
@@ -83,18 +95,38 @@ export function setupEditor(documentManager: DocumentManager) {
         }
       }
     }),
-    // スムーススクロール設定
+    // スムーススクロール設定と横スクロール改善
     EditorView.theme({
       "&": {
         scrollBehavior: "smooth", // スムーススクロールを有効化
-        scrollbarWidth: "thin"    // スクロールバーを細くする
+        scrollbarWidth: "thin",   // スクロールバーを細くする
+        overscrollBehavior: "none" // オーバースクロールを無効化
       },
       ".cm-scroller": {
         overflow: "auto",
         scrollbarWidth: "thin",
-        scrollBehavior: "smooth"
+        scrollBehavior: "smooth",
+        overscrollBehavior: "none",
+        touchAction: "pan-y pan-x", // 縦横両方のスクロールを許可
+        willChange: "scroll-position", // スクロール性能の最適化
+        "-webkit-overflow-scrolling": "touch" // iOSでのスムーススクロール
+      },
+      ".cm-content": {
+        minWidth: "fit-content" // 長い行をスクロールできるよう確保
       }
     }),
+    // 長い行の水平スクロールを安定させるためのスタイル設定
+    EditorView.theme({
+      "&": {
+        maxWidth: "none", // エディタ自体の最大幅の制限をなくす
+      },
+      ".cm-line": {
+        overflowX: "auto", // 長い行のスクロールを許可
+        whiteSpace: "pre" // スペースと改行を保持
+      }
+    }),
+    // スクロールパストエンド（ドキュメント末尾以降もスクロール可能に）
+    scrollPastEnd(),
     darkTheme,
     waterCursorTheme,
     EditorView.contentAttributes.of({style: "caret-color: #38bdf8;"}),
@@ -102,6 +134,10 @@ export function setupEditor(documentManager: DocumentManager) {
     EditorView.domEventHandlers({
       touchstart(event, view) {
         console.log('エディタのタッチイベント開始');
+        // マルチタッチ操作の処理（ピンチズームなど）を防止
+        if (event.touches.length > 1) {
+          event.preventDefault();
+        }
         return false; // イベントを伝搬させる
       },
       touchmove(event, view) {
@@ -113,11 +149,20 @@ export function setupEditor(documentManager: DocumentManager) {
               detail: { view: view } 
             });
             document.dispatchEvent(customEvent);
+            
+            // ビューの更新をリクエスト（スクロール処理を安定させる）
+            view.requestMeasure();
           } catch (error) {
             console.error('タッチスクロール中のイベント発火エラー:', error);
           }
         }
         return false; // イベントを伝搬させる
+      },
+      // スクロールイベントの追加
+      scroll(event, view) {
+        // スクロール処理を安定させるため、ビューの更新をリクエスト
+        view.requestMeasure();
+        return false;
       }
     }),
   ];

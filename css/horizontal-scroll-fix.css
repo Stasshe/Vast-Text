@@ -1,0 +1,55 @@
+/* 
+ * 横スクロール安定化のためのCSS 
+ */
+
+/* エディタの横スクロール関連設定 */
+.cm-editor, .cm-scroller {
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+}
+
+/* 長い行が確実に横スクロールできるように */
+.cm-content {
+  white-space: pre !important;
+  overflow-x: auto !important;
+  min-width: fit-content !important;
+}
+
+.cm-line {
+  overflow-x: visible !important;
+  white-space: pre !important;
+}
+
+/* スクロールバーのスタイル */
+.cm-scroller::-webkit-scrollbar {
+  height: 6px !important;
+  width: 6px !important;
+}
+
+.cm-scroller::-webkit-scrollbar-thumb {
+  background-color: rgba(56, 189, 248, 0.3) !important;
+  border-radius: 3px;
+}
+
+.cm-scroller::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* タッチデバイス向け最適化 */
+@media (pointer: coarse) {
+  .cm-content {
+    touch-action: pan-x pan-y !important;
+  }
+  
+  .cm-scroller {
+    touch-action: pan-x pan-y !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* スクロールバーを少し大きく */
+  .cm-scroller::-webkit-scrollbar {
+    height: 8px !important;
+    width: 8px !important;
+  }
+}
