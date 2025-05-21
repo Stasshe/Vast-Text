@@ -1,0 +1,32 @@
+{
+  "name": "vast-text",
+  "version": "1.0.0",
+  "description": "大量のテキストを効率的に編集できる軽量ウェブエディタ",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "text-editor",
+    "spa",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@codemirror/commands": "^6.3.0",
+    "@codemirror/language": "^6.9.2",
+    "@codemirror/state": "^6.3.1",
+    "@codemirror/view": "^6.22.0",
+    "dexie": "^3.2.4"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.5",
+    "typescript": "^5.2.2",
+    "vite": "^4.5.0"
+  }
+}

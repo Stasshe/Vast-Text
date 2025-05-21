@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="大量のテキストや文書をスムーズに編集できる軽量ウェブアプリケーション">
+  <meta name="theme-color" content="#3b82f6">
+  <title>Vast-Text Editor</title>
+  <link rel="stylesheet" href="css/tailwind.output.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+  <div id="app" class="h-screen flex flex-col">
+    <header class="bg-white dark:bg-gray-800 shadow-sm">
+      <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+        <h1 class="text-xl font-bold">Vast-Text Editor</h1>
+        <div class="flex space-x-2">
+          <button id="new-doc-btn" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+            新規ドキュメント
+          </button>
+          <button id="toggle-sidebar-btn" class="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">
+            サイドバー切替
+          </button>
+        </div>
+      </div>
+    </header>
+    
+    <main class="flex-1 flex overflow-hidden">
+      <!-- サイドバー -->
+      <aside id="sidebar" class="w-64 bg-white dark:bg-gray-800 shadow-md overflow-y-auto">
+        <div class="p-4">
+          <h2 class="text-lg font-semibold mb-3">ドキュメント一覧</h2>
+          <div class="space-y-1" id="document-list">
+            <!-- ドキュメントリストがここに表示されます -->
+          </div>
+        </div>
+      </aside>
+      
+      <!-- エディタコンテナ -->
+      <div id="editor-container" class="flex-1 flex overflow-hidden">
+        <div id="editor" class="flex-1 overflow-auto"></div>
+        <div id="minimap" class="w-20 bg-gray-100 dark:bg-gray-800 overflow-hidden"></div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

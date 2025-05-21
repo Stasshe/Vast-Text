@@ -1,0 +1,74 @@
+/* main.css */
+
+/* ベーススタイル */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* エディタスタイル */
+#editor {
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 12px;
+  height: 100%;
+  overflow: auto;
+}
+
+/* ミニマップスタイル */
+#minimap {
+  font-size: 2px;
+  line-height: 2px;
+  opacity: 0.6;
+  overflow: hidden;
+  border-left: 1px solid #e5e7eb;
+}
+
+/* サイドバーアイテムスタイル */
+.document-item {
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.document-item:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.document-item.active {
+  background-color: rgba(59, 130, 246, 0.2);
+  font-weight: 600;
+}
+
+/* アニメーション */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ドキュメント移動ボタン */
+.move-btn {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.move-btn:hover {
+  opacity: 1;
+}
+
+/* ミニマップカーソル */
+.minimap-cursor {
+  position: absolute;
+  right: 0;
+  width: 20px;
+  background-color: rgba(59, 130, 246, 0.3);
+  pointer-events: none;
+}
