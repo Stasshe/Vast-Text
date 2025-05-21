@@ -1,5 +1,6 @@
 import { EditorView } from '@codemirror/view';
 import { DocumentManager } from './document-manager';
+import { selectDocument } from './app'; // selectDocument関数をインポート
 
 // UIイベントリスナーのセットアップ
 export function setupUIListeners(
@@ -178,4 +179,47 @@ export function setupUIListeners(
       }
     }
   });
+  
+  // ドキュメント選択時の処理
+  function selectDocument(id: string) {
+    // ...existing code...
+    
+    // 文字数カウンターを更新
+    const document_editor = documentManager.getDocument(id);
+    if (document) {
+      const content = document_editor!.content || '';
+      const charCounter = document.getElementById('chars-count');
+      if (charCounter) {
+        charCounter.textContent = content.length.toLocaleString();
+        
+        // カウンターを表示
+        const counterContainer = document.getElementById('character-counter');
+        if (counterContainer) {
+          counterContainer.classList.remove('minimized');
+          
+          // 3秒後に最小化
+          setTimeout(() => {
+            counterContainer.classList.add('minimized');
+          }, 3000);
+        }
+      }
+    }
+  }
+  
+  // ドキュメントリストのクリックイベント
+  const documentList = document.getElementById('document-list');
+  if (documentList) {
+    documentList.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      const documentItem = target.closest('.document-item');
+      
+      if (documentItem) {
+        const docId = documentItem.getAttribute('data-id');
+        if (docId) {
+          // app.ts のselectDocument関数を呼び出し
+          selectDocument(docId);
+        }
+      }
+    });
+  }
 }

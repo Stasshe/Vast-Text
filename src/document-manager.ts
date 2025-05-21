@@ -26,6 +26,7 @@ class DocumentDatabase extends Dexie {
 export class DocumentManager {
   private db: DocumentDatabase;
   private currentDocumentId: string | null = null;
+  private documents: Array<{ id: string, title: string, content: string }> = [];
 
   constructor() {
     this.db = new DocumentDatabase();
@@ -254,5 +255,16 @@ export class DocumentManager {
       detail: { content } 
     });
     document.dispatchEvent(event);
+  }
+
+  // 特定のIDのドキュメントを取得するメソッド
+  getDocument(id: string) {
+    return this.documents.find(doc => doc.id === id);
+  }
+  
+  // 現在のドキュメントを取得するメソッド
+  getCurrentDocument() {
+    if (!this.currentDocumentId) return null;
+    return this.documents.find(doc => doc.id === this.currentDocumentId);
   }
 }

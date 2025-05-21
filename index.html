@@ -165,6 +165,41 @@
       background-color: #4b5563;
       color: #e5e7eb;
     }
+    
+    /* 文字数カウンターのスタイル */
+    #character-counter {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      background-color: rgba(59, 130, 246, 0.8);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 14px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      transition: all 0.3s ease;
+      font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+    
+    #character-counter.minimized {
+      transform: translateY(100px);
+      opacity: 0.2;
+    }
+    
+    #character-counter:hover {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .dark #character-counter {
+      background-color: rgba(37, 99, 235, 0.8);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    }
   </style>
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/fix.css">
@@ -182,9 +217,9 @@
           <button id="new-doc-btn" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
             +New
           </button>
-          <button id="toggle-highlight-btn" class="px-3 py-1 rounded active" title="ハイライト表示の切り替え">
+          <!--<button id="toggle-highlight-btn" class="px-3 py-1 rounded active" title="ハイライト表示の切り替え">
             <span>HL</span>
-          </button>
+          </button>-->
           <button id="toggle-sidebar-btn" class="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">
             ≡
           </button>
@@ -213,6 +248,12 @@
     <!-- メニューコンテナにクラスを追加 -->
     <div class="menu-container">
       <!-- メニューアイテム -->
+    </div>
+
+    <!-- 文字数カウンター -->
+    <div id="character-counter">
+      <span id="chars-count">0</span>
+      <span>文字</span>
     </div>
   </div>
 

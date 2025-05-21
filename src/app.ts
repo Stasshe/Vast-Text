@@ -3,6 +3,9 @@ import { DocumentManager } from './document-manager';
 import { setupUIListeners } from './ui';
 import { setupMinimap } from './minimap';
 
+// ドキュメントマネージャーのグローバル参照
+let documentManager: DocumentManager;
+
 // ダークモード検出とスクロール固定
 function setupAppEnvironment() {
   // スクロール固定
@@ -29,7 +32,7 @@ async function initApp() {
   setupAppEnvironment();
   
   // ドキュメント管理機能の初期化
-  const documentManager = new DocumentManager();
+  documentManager = new DocumentManager();
   await documentManager.initialize();
   
   // エディタのセットアップ
@@ -52,6 +55,68 @@ async function initApp() {
   
   // ドキュメントリストを更新
   documentManager.updateDocumentList();
+  
+  // 文字数カウンターの初期化
+  setupCharacterCounter();
+}
+
+// 文字数カウンターの初期化
+function setupCharacterCounter() {
+  const counterContainer = document.getElementById('character-counter');
+  if (!counterContainer) return;
+  
+  // クリックで最小化/最大化を切り替え
+  counterContainer.addEventListener('click', () => {
+    counterContainer.classList.toggle('minimized');
+  });
+  
+  // 初期状態では3秒後に最小化
+  setTimeout(() => {
+    counterContainer.classList.add('minimized');
+  }, 3000);
+  
+  // 初期文字数を表示
+  updateCharacterCount();
+}
+
+// 文字数カウンターを更新する関数
+function updateCharacterCount() {
+  if (!documentManager) return;
+  
+  const currentDoc = documentManager.getCurrentDocument();
+  if (!currentDoc) return;
+  
+  const content = currentDoc.content || '';
+  const charCounter = document.getElementById('chars-count');
+  
+  if (charCounter) {
+    charCounter.textContent = content.length.toLocaleString();
+    
+    // カウンターを表示
+    const counterContainer = document.getElementById('character-counter');
+    if (counterContainer) {
+      counterContainer.classList.remove('minimized');
+      
+      // 3秒後に最小化
+      setTimeout(() => {
+        counterContainer.classList.add('minimized');
+      }, 3000);
+    }
+  }
+}
+
+// ドキュメント選択時の処理 - 元のコードを削除し、UIから呼び出される関数として再定義
+export function selectDocument(id: string) {
+  if (!documentManager) {
+    console.error('ドキュメントマネージャーが初期化されていません');
+    return;
+  }
+  
+  // ドキュメントを選択
+  documentManager.loadDocument(id);
+  
+  // 文字数カウンターを更新
+  updateCharacterCount();
 }
 
 // DOMの読み込みが完了したらアプリを初期化

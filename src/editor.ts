@@ -95,6 +95,27 @@ export function setupEditor(documentManager: DocumentManager) {
   // シンタックスハイライトの拡張機能を格納する変数
   const syntaxHighlightExtension = syntaxHighlighting(darkHighlightStyle);
   
+  // 文字数を更新する関数
+  const updateCharacterCount = (content: string) => {
+    const charCounter = document.getElementById('chars-count');
+    if (charCounter) {
+      // 改行を含めた文字数をカウント
+      const count = content.length;
+      charCounter.textContent = count.toLocaleString();
+      
+      // カウンターを表示
+      const counterContainer = document.getElementById('character-counter');
+      if (counterContainer) {
+        counterContainer.classList.remove('minimized');
+        
+        // 3秒後に最小化
+        setTimeout(() => {
+          counterContainer.classList.add('minimized');
+        }, 3000);
+      }
+    }
+  };
+  
   // エディタの拡張機能
   let extensions: Extension[] = [
     lineNumbers(),
@@ -165,6 +186,9 @@ export function setupEditor(documentManager: DocumentManager) {
         // ドキュメントが変更されたら保存
         const content = update.state.doc.toString();
         documentManager.saveCurrentDocument(content);
+        
+        // 文字数カウンターを更新
+        updateCharacterCount(content);
         
         // ミニマップを更新
         try {
@@ -376,6 +400,9 @@ export function setupEditor(documentManager: DocumentManager) {
         insert: content
       }
     });
+    
+    // 文字数カウンターも更新
+    updateCharacterCount(content);
   };
 
   return {
