@@ -8,38 +8,16 @@ function setupAppEnvironment() {
   // スクロール固定
   document.body.classList.add('fix-scroll');
   
-  // ローカルストレージからテーマ設定を読み込む
-  const savedTheme = localStorage.getItem('theme');
-  
-  if (savedTheme === 'dark') {
-    // 保存されたテーマがダークモードの場合
+  // 強制的にダークモードを適用
+  document.documentElement.classList.add('dark');
+  document.body.classList.add('dark-mode');
+  console.log('強制的にダークモードを適用しました');
+
+  // テーマ変更のリスナー (常にダークモードを維持)
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    // 常にダークモードを維持
     document.documentElement.classList.add('dark');
     document.body.classList.add('dark-mode');
-  } else if (savedTheme === 'light') {
-    // 保存されたテーマがライトモードの場合
-    document.documentElement.classList.remove('dark');
-    document.body.classList.remove('dark-mode');
-  } else {
-    // 保存された設定がない場合はシステム設定に従う
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (prefersDark) {
-      document.documentElement.classList.add('dark');
-      document.body.classList.add('dark-mode');
-    }
-  }
-  
-  // ダークモード変更検出（システム設定変更時）
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-    // ユーザーが明示的に設定していない場合のみシステム設定に従う
-    if (!localStorage.getItem('theme')) {
-      if (e.matches) {
-        document.documentElement.classList.add('dark');
-        document.body.classList.add('dark-mode');
-      } else {
-        document.documentElement.classList.remove('dark');
-        document.body.classList.remove('dark-mode');
-      }
-    }
   });
 }
 

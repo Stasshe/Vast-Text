@@ -71,6 +71,7 @@ export function setupUIListeners(
   const toggleThemeBtn = document.getElementById('toggle-theme-btn');
   if (toggleThemeBtn) {
     toggleThemeBtn.addEventListener('click', () => {
+      console.log('テーマ切り替えボタンがクリックされました');
       const isDarkMode = document.documentElement.classList.contains('dark');
       
       if (isDarkMode) {
@@ -78,16 +79,63 @@ export function setupUIListeners(
         document.documentElement.classList.remove('dark');
         document.body.classList.remove('dark-mode');
         localStorage.setItem('theme', 'light');
+        console.log('ライトモードに切り替えました');
       } else {
         // ダークモードに切り替え
         document.documentElement.classList.add('dark');
         document.body.classList.add('dark-mode');
         localStorage.setItem('theme', 'dark');
+        console.log('ダークモードに切り替えました');
       }
       
-      // エディタの見た目を更新する
+      // 直接DOMを操作してエディターのスタイルを更新
+      const editorElement = document.getElementById("editor");
       const newDarkMode = !isDarkMode;
-      updateEditorTheme(newDarkMode, view);
+      
+      if (editorElement) {
+        console.log('エディター要素を見つけました、スタイルを更新します');
+        if (newDarkMode) {
+          editorElement.style.backgroundColor = "#1f2937";
+          document.querySelectorAll('.cm-content').forEach(el => {
+            (el as HTMLElement).style.color = "#e5e7eb";
+          });
+        } else {
+          editorElement.style.backgroundColor = "#fff";
+          document.querySelectorAll('.cm-content').forEach(el => {
+            (el as HTMLElement).style.color = "#000";
+          });
+        }
+      } else {
+        console.log('エディター要素が見つかりません');
+      }
+      
+      // カーソルスタイルを強制的に更新
+      document.querySelectorAll(".cm-cursor").forEach(cursorEl => {
+        if (cursorEl instanceof HTMLElement) {
+          if (newDarkMode) {
+            cursorEl.style.borderLeftColor = "#38bdf8";
+            cursorEl.style.borderLeftWidth = "1.5px";
+            cursorEl.style.boxShadow = "0 0 2px #38bdf8";
+          } else {
+            cursorEl.style.borderLeftColor = "#000";
+            cursorEl.style.borderLeftWidth = "1.2px";
+            cursorEl.style.boxShadow = "none";
+          }
+        }
+      });
+      
+      // ガター（行番号）のスタイルを強制的に更新
+      document.querySelectorAll(".cm-gutters").forEach(gutterEl => {
+        if (gutterEl instanceof HTMLElement) {
+          if (newDarkMode) {
+            gutterEl.style.backgroundColor = "#111827";
+            gutterEl.style.color = "#9ca3af";
+          } else {
+            gutterEl.style.backgroundColor = "#f5f5f5";
+            gutterEl.style.color = "#6b7280";
+          }
+        }
+      });
     });
   }
 

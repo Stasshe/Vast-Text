@@ -6,15 +6,149 @@
   <meta name="description" content="大量のテキストや文書をスムーズに編集できる軽量ウェブアプリケーション">
   <meta name="theme-color" content="#3b82f6">
   <title>Vast-Text Editor</title>
+  <script src="https://cdn.tailwindcss.com?v=3.3.5"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'media',
+      theme: {
+        extend: {},
+      }
+    }
+  </script>
+  <Script src="//cdn.jsdelivr.net/npm/eruda" strategy="beforeInteractive" />
+  <Script id="eruda-init" strategy="afterInteractive">
+    {`eruda.init();`}
+  </Script>
+  <style>
+    /* ベーススタイル */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden !important;
+      position: fixed;
+      width: 100%;
+    }
+
+    #app {
+      height: 100vh;
+      max-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* エディタスタイル */
+    #editor {
+      font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      padding: 0;
+      height: 100%;
+      overflow: auto;
+    }
+
+    /* ダークモード関連のスタイル */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #121212;
+        color: #e5e7eb;
+      }
+    }
+
+    html.dark,
+    body.dark-mode {
+      background-color: #121212;
+      color: #e5e7eb;
+    }
+
+    /* CodeMirrorカーソルスタイル */
+    .cm-cursor {
+      border-left: 2px solid #38bdf8 !important;
+      border-left-color: #38bdf8 !important;
+      visibility: visible !important;
+      margin-left: -0.6px;
+      animation: blink 1.2s step-end infinite !important;
+      box-shadow: 0 0 3px #38bdf8 !important;
+    }
+
+    @keyframes blink {
+      from, to { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* 選択範囲のスタイル */
+    .cm-selectionBackground,
+    .cm-selectionBackground.cm-selectionBackground {
+      background-color: rgba(56, 189, 248, 0.3) !important;
+    }
+
+    .cm-focused {
+      outline: none !important;
+    }
+
+    /* ミニマップスタイル */
+    #minimap {
+      font-size: 2px;
+      line-height: 2px;
+      opacity: 0.7;
+      overflow: hidden;
+      border-left: 1px solid #e5e7eb;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .dark #minimap {
+      border-left-color: #4b5563;
+    }
+
+    /* サイドバーアイテムスタイル */
+    .document-item {
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .document-item:hover {
+      background-color: rgba(59, 130, 246, 0.1);
+    }
+
+    .document-item.active {
+      background-color: rgba(59, 130, 246, 0.2);
+      font-weight: 600;
+    }
+
+    /* ミニマップカーソル */
+    .minimap-cursor {
+      position: absolute;
+      right: 0;
+      width: 20px;
+      background-color: rgba(59, 130, 246, 0.3);
+      pointer-events: none;
+      border-radius: 2px 0 0 2px;
+      z-index: 10;
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .dark .minimap-cursor {
+      background-color: rgba(96, 165, 250, 0.4);
+      box-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
+    }
+
+    /* ミニマップライン */
+    .minimap-line {
+      margin-bottom: 1px;
+    }
+  </style>
+  
   
   
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
-  <script type="module" crossorigin src="/assets/main-ea2beb51.js"></script>
-  <link rel="stylesheet" href="/assets/index-bdcc0ea4.css">
+  <script type="module" crossorigin src="/assets/main-cd990e8b.js"></script>
+  <link rel="stylesheet" href="/assets/index-a0271ad9.css">
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-  <div id="app" class="h-screen flex flex-col">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 fix-scroll overflow-hidden">
+  <div id="app" class="h-screen flex flex-col overflow-hidden">
     <header class="bg-white dark:bg-gray-800 shadow-sm">
       <div class="container mx-auto px-4 py-3 flex items-center justify-between">
         <h1 class="text-xl font-bold">Vast-Text Editor</h1>
@@ -49,5 +183,35 @@
   </div>
 
   
+  <script>
+    // カーソルスタイル強制適用
+    document.addEventListener('DOMContentLoaded', () => {
+      // カーソル用のスタイルシートを直接追加
+      const styleEl = document.createElement('style');
+      styleEl.innerHTML = `
+        /* 青い水色カーソルを強制適用 */
+        .cm-cursor, .cm-cursor.cm-focused {
+          border-left: 2px solid #38bdf8 !important;
+          box-shadow: 0 0 3px #38bdf8 !important;
+        }
+        
+        /* 水色選択範囲を強制適用 */
+        .cm-selectionBackground {
+          background-color: rgba(56, 189, 248, 0.3) !important;
+        }
+      `;
+      document.head.appendChild(styleEl);
+      
+      // カーソルを確実に修正するための監視
+      setInterval(() => {
+        document.querySelectorAll('.cm-cursor').forEach(el => {
+          if (el instanceof HTMLElement) {
+            el.style.borderLeft = '2px solid #38bdf8';
+            el.style.boxShadow = '0 0 3px #38bdf8';
+          }
+        });
+      }, 500);
+    });
+  </script>
 </body>
 </html>

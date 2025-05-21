@@ -11,11 +11,64 @@ body.fix-scroll {
   height: 100% !important;
 }
 
-/* CodeMirrorカーソルのダークモードスタイル強化 */
-html[class~="dark"] .cm-cursor, 
-.dark .cm-cursor, 
-body.dark-mode .cm-cursor,
-.dark-mode .cm-cursor {
-  border-left: 1.5px solid #38bdf8 !important; /* 水色に変更、線を太く */
-  box-shadow: 0 0 2px #38bdf8 !important; /* 光るエフェクト */
+/* エディタの背景色と文字色を設定 */
+.cm-editor {
+  background-color: #121212 !important;
+}
+
+.cm-content {
+  color: #ffffff !important;
+}
+
+.cm-line {
+  color: #ffffff !important;
+}
+
+/* カーソルスタイル - 水色 */
+.cm-cursor {
+  border-left: 2px solid #38bdf8 !important;
+  box-shadow: 0 0 3px #38bdf8 !important;
+}
+
+/* エディター全体のコンテナ要素も強制的にダークモードに */
+#editor {
+  background-color: #121212 !important;
+}
+
+/* カーソルスタイルを強制上書き */
+.cm-cursor {
+  border-left: 2px solid #38bdf8 !important;
+  border-left-color: #38bdf8 !important;
+  box-shadow: 0 0 3px #38bdf8 !important;
+  visibility: visible !important;
+  animation: blink 1.2s step-end infinite !important;
+}
+
+/* 選択範囲のスタイルを強制上書き */
+.cm-selectionBackground {
+  background-color: rgba(56, 189, 248, 0.3) !important;
+}
+
+.cm-selectionMatch {
+  background-color: rgba(56, 189, 248, 0.2) !important;
+}
+
+.cm-gutters {
+  background-color: #1a1a1a !important;
+  color: #9ca3af !important;
+  border: none !important;
+}
+
+.cm-activeLineGutter, .cm-activeLine {
+  background-color: rgba(55, 65, 81, 0.5) !important;
+}
+
+/* エディター内の選択範囲 */
+.cm-selectionBackground {
+  background-color: rgba(56, 189, 248, 0.3) !important;
+}
+
+/* エディタ全体のコンテナ要素も強制的にダークモードに */
+#editor {
+  background-color: #121212 !important;
 }

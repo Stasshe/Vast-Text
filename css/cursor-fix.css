@@ -1,0 +1,44 @@
+/* CodeMirror強制スタイル修正 */
+.cm-editor {
+  background-color: #121212 !important;
+}
+
+.cm-content {
+  color: #ffffff !important;
+}
+
+.cm-cursor {
+  border-left: 2px solid #38bdf8 !important;
+  box-shadow: 0 0 3px #38bdf8 !important;
+}
+
+.cm-selectionBackground {
+  background-color: rgba(56, 189, 248, 0.3) !important;
+}
+
+.cm-selectionMatch {
+  background-color: rgba(56, 189, 248, 0.2) !important;
+}
+
+/* 強制スタイル上書き */
+:root {
+  --cm-cursor-color: #38bdf8 !important;
+  --cm-selection-bg: rgba(56, 189, 248, 0.3) !important;
+}
+
+/* すべてのクラスを網羅 */
+.cm-cursor, 
+.cm-cursor.cm-cursor, 
+.cm-editor .cm-cursor, 
+.cm-focused .cm-cursor {
+  border-left: 2px solid #38bdf8 !important;
+  border-left-color: #38bdf8 !important;
+  box-shadow: 0 0 3px #38bdf8 !important;
+}
+
+.cm-selectionBackground, 
+.cm-selectionBackground.cm-selectionBackground, 
+.cm-editor .cm-selectionBackground, 
+.cm-editor.cm-focused .cm-selectionBackground {
+  background-color: rgba(56, 189, 248, 0.3) !important;
+}

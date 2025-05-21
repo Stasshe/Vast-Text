@@ -1,0 +1,55 @@
+/* CodeMirror 6カーソルとセレクション修正用CSS */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+
+/* カーソルをあらゆるパターンで水色に */
+.cm-cursor,
+.cm-editor .cm-cursor,
+.cm-editor.cm-focused .cm-cursor,
+div[class*="cm-cursor"],
+div[class^="cm-cursor"],
+div[class*="cm"].cm-cursor {
+  border-left: 2px solid #38bdf8 !important;
+  border-left-color: #38bdf8 !important;
+  box-shadow: 0 0 3px #38bdf8 !important;
+  margin-left: -1px !important;
+  visibility: visible !important;
+}
+
+/* 選択範囲をあらゆるパターンで水色に */
+.cm-selectionBackground,
+.cm-editor .cm-selectionBackground,
+.cm-editor.cm-focused .cm-selectionBackground,
+div[class*="cm-selectionBackground"],
+div[class^="cm-selectionBackground"],
+div[class*="cm"].cm-selectionBackground {
+  background-color: rgba(56, 189, 248, 0.3) !important;
+}
+
+/* 選択マッチを水色に */
+.cm-selectionMatch,
+.cm-editor .cm-selectionMatch,
+div[class*="cm-selectionMatch"] {
+  background-color: rgba(56, 189, 248, 0.2) !important;
+}
+
+/* レイヤー上の優先度を最大に */
+#editor .cm-cursor,
+.cm-editor .cm-scroller .cm-cursor,
+.cm-editor .cm-content .cm-cursor,
+.cm-editor * .cm-cursor {
+  border-left: 2px solid #38bdf8 !important;
+  border-left-color: #38bdf8 !important;
+  box-shadow: 0 0 3px #38bdf8 !important;
+  z-index: 9999 !important;
+}
+
+/* アニメーション付きカーソル */
+@keyframes cm-blink {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.cm-cursor {
+  animation: cm-blink 1.2s steps(1) infinite !important;
+}

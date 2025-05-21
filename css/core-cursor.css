@@ -1,0 +1,36 @@
+/* リセットCSS - CodeMirrorカーソル用 */
+.cm-cursor {
+  border-left: 2px solid #38bdf8 !important;
+  box-shadow: 0 0 3px #38bdf8 !important;
+  caret-color: #38bdf8 !important;
+}
+
+.cm-selectionBackground {
+  background-color: rgba(56, 189, 248, 0.3) !important;
+}
+
+.cm-editor {
+  caret-color: #38bdf8 !important;
+}
+
+/* モバイルでのカーソル対応 */
+.cm-content {
+  caret-color: #38bdf8 !important;
+}
+
+/* テキスト入力エリア */
+.cm-line {
+  caret-color: #38bdf8 !important;
+}
+
+/* アニメーション調整 */
+@keyframes blink-cursor {
+  from { opacity: 1; }
+  50% { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.cm-cursor:not(.cm-focused .cm-cursor) {
+  visibility: visible !important;
+  animation: blink-cursor 1s ease-in-out infinite !important;
+}

@@ -15,6 +15,10 @@
       }
     }
   </script>
+  <Script src="//cdn.jsdelivr.net/npm/eruda" strategy="beforeInteractive" />
+  <Script id="eruda-init" strategy="afterInteractive">
+    {`eruda.init();`}
+  </Script>
   <style>
     /* ベーススタイル */
     html, body {
@@ -37,23 +41,33 @@
       font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
       font-size: 14px;
       line-height: 1.5;
-      padding: 12px;
+      padding: 0;
       height: 100%;
       overflow: auto;
-      background-color: #fff;
     }
 
-    .dark #editor {
-      background-color: #1f2937;
+    /* ダークモード関連のスタイル */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #121212;
+        color: #e5e7eb;
+      }
+    }
+
+    html.dark,
+    body.dark-mode {
+      background-color: #121212;
       color: #e5e7eb;
     }
 
     /* CodeMirrorカーソルスタイル */
     .cm-cursor {
-      border-left: 1.2px solid #000 !important;
+      border-left: 2px solid #38bdf8 !important;
+      border-left-color: #38bdf8 !important;
       visibility: visible !important;
       margin-left: -0.6px;
       animation: blink 1.2s step-end infinite !important;
+      box-shadow: 0 0 3px #38bdf8 !important;
     }
 
     @keyframes blink {
@@ -61,8 +75,10 @@
       50% { opacity: 0; }
     }
 
-    .dark .cm-cursor {
-      border-left-color: #38bdf8 !important; /* 水色に変更 */
+    /* 選択範囲のスタイル */
+    .cm-selectionBackground,
+    .cm-selectionBackground.cm-selectionBackground {
+      background-color: rgba(56, 189, 248, 0.3) !important;
     }
 
     .cm-focused {
@@ -125,6 +141,7 @@
   </style>
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/fix.css">
+  <link rel="stylesheet" href="css/core-cursor.css">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
 </head>
@@ -139,9 +156,6 @@
           </button>
           <button id="toggle-sidebar-btn" class="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">
             サイドバー切替
-          </button>
-          <button id="toggle-theme-btn" class="px-3 py-1 bg-gray-200 dark:bg-blue-500 rounded hover:bg-gray-300 dark:hover:bg-blue-600">
-            テーマ切替
           </button>
         </div>
       </div>
@@ -167,5 +181,35 @@
   </div>
 
   <script type="module" src="js/app.js"></script>
+  <script>
+    // カーソルスタイル強制適用
+    document.addEventListener('DOMContentLoaded', () => {
+      // カーソル用のスタイルシートを直接追加
+      const styleEl = document.createElement('style');
+      styleEl.innerHTML = `
+        /* 青い水色カーソルを強制適用 */
+        .cm-cursor, .cm-cursor.cm-focused {
+          border-left: 2px solid #38bdf8 !important;
+          box-shadow: 0 0 3px #38bdf8 !important;
+        }
+        
+        /* 水色選択範囲を強制適用 */
+        .cm-selectionBackground {
+          background-color: rgba(56, 189, 248, 0.3) !important;
+        }
+      `;
+      document.head.appendChild(styleEl);
+      
+      // カーソルを確実に修正するための監視
+      setInterval(() => {
+        document.querySelectorAll('.cm-cursor').forEach(el => {
+          if (el instanceof HTMLElement) {
+            el.style.borderLeft = '2px solid #38bdf8';
+            el.style.boxShadow = '0 0 3px #38bdf8';
+          }
+        });
+      }, 500);
+    });
+  </script>
 </body>
 </html>
