@@ -1,0 +1,70 @@
+/* 
+ * 自動補完メニューのスタイル最適化 
+ */
+
+/* 補完メニューの基本スタイル */
+.cm-tooltip.cm-tooltip-autocomplete {
+  border: 1px solid rgba(56, 189, 248, 0.5) !important;
+  background-color: #1a1a1a !important;
+  border-radius: 4px !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5) !important;
+  max-width: 80vw !important;
+  max-height: 40vh !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin !important;
+}
+
+/* 選択アイテムのハイライト */
+.cm-tooltip-autocomplete ul li[aria-selected] {
+  background-color: rgba(56, 189, 248, 0.3) !important;
+  color: white !important;
+}
+
+/* 補完メニューのスクロールバー */
+.cm-tooltip-autocomplete::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+.cm-tooltip-autocomplete::-webkit-scrollbar-thumb {
+  background-color: rgba(56, 189, 248, 0.5) !important;
+  border-radius: 3px !important;
+}
+
+.cm-tooltip-autocomplete::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+/* 候補アイテムの表示スタイル */
+.cm-tooltip-autocomplete ul li {
+  padding: 4px 8px !important;
+  line-height: 1.4 !important;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace !important;
+  border-radius: 2px !important;
+  margin: 1px 0 !important;
+  transition: background-color 0.1s !important;
+}
+
+/* 文字タイプに応じた色設定 */
+.cm-completionIcon {
+  color: #38bdf8 !important;
+  margin-right: 6px !important;
+}
+
+/* ホバー時のハイライト */
+.cm-tooltip-autocomplete ul li:hover:not([aria-selected]) {
+  background-color: rgba(56, 189, 248, 0.15) !important;
+}
+
+/* タブレット/モバイル向けの最適化 */
+@media (pointer: coarse) {
+  .cm-tooltip-autocomplete ul li {
+    padding: 8px 10px !important;
+    font-size: 16px !important;
+  }
+  
+  .cm-tooltip-autocomplete {
+    max-width: 90vw !important;
+    max-height: 45vh !important;
+  }
+}

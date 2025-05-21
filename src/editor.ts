@@ -1,7 +1,9 @@
 import { EditorState, Extension } from '@codemirror/state';
 import { EditorView, keymap, lineNumbers, highlightActiveLineGutter, scrollPastEnd } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
-import { autocompletion, startCompletion, closeBrackets } from '@codemirror/autocomplete';
+import { autocompletion, startCompletion, closeBrackets, completionKeymap } from '@codemirror/autocomplete';
+import { javascript } from '@codemirror/lang-javascript';
+import { indentOnInput, syntaxHighlighting, defaultHighlightStyle, bracketMatching, foldGutter } from '@codemirror/language';
 import { DocumentManager } from './document-manager';
 import { moveLineUp, moveLineDown } from './keymap-extensions';
 
@@ -66,14 +68,51 @@ export function setupEditor(documentManager: DocumentManager) {
     autocompletion({
       activateOnTyping: true, // タイプ中にアクティブ化
       maxRenderedOptions: 10, // 表示される最大オプション数
-      defaultKeymap: true, // デフォルトのキーマップを使用
-      icons: true, // アイコンを表示
+      override: [
+        // カスタム補完ソース - 単語補完
+        context => {
+          // 現在のエディタ内容から単語を抽出して提案
+          const word = context.matchBefore(/\w+/);
+          if (!word && !context.explicit) return null;
+          
+          // エディタのテキスト全体から単語を抽出
+          const text = context.state.doc.toString();
+          const words = new Set<string>();
+          
+          // 文字列から単語を抽出（3文字以上の単語のみ）
+          const wordRegex = /\w{3,}/g;
+          let match;
+          while ((match = wordRegex.exec(text)) !== null) {
+            words.add(match[0]);
+          }
+          
+          return {
+            from: word ? word.from : context.pos,
+            options: Array.from(words).map(label => ({
+              label,
+              type: "text"
+            })),
+            span: /\w*/
+          };
+        }
+      ]
     }),
     // 閉じ括弧の自動挿入
     closeBrackets(),
+    // 括弧のマッチング表示
+    bracketMatching(),
+    // インデント検出
+    indentOnInput(),
+    // シンタックスハイライト
+    syntaxHighlighting(defaultHighlightStyle),
+    // コード折りたたみ
+    foldGutter(),
+    // 言語サポート（JavaScript構文）
+    javascript(),
     keymap.of([
       ...defaultKeymap,
       ...historyKeymap,
+      ...completionKeymap,
       // カスタムキーマップを追加
       { key: "Alt-ArrowUp", run: moveLineUp },
       { key: "Alt-ArrowDown", run: moveLineDown },
