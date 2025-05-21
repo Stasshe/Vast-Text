@@ -1,17 +1,46 @@
-import { EditorState, Extension } from '@codemirror/state';
+import { EditorState, Extension, StateEffect } from '@codemirror/state';
 import { EditorView, keymap, lineNumbers, highlightActiveLineGutter, scrollPastEnd } from '@codemirror/view';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { autocompletion, startCompletion, closeBrackets, completionKeymap } from '@codemirror/autocomplete';
 import { javascript } from '@codemirror/lang-javascript';
-import { indentOnInput, syntaxHighlighting, defaultHighlightStyle, bracketMatching, foldGutter } from '@codemirror/language';
+import { indentOnInput, syntaxHighlighting, defaultHighlightStyle, bracketMatching, foldGutter, HighlightStyle } from '@codemirror/language';
 import { search, searchKeymap } from '@codemirror/search';
 import { DocumentManager } from './document-manager';
 import { moveLineUp, moveLineDown, openReplacePanel } from './keymap-extensions';
+import { tags } from '@lezer/highlight';
 
 // ダークモード検出
 export const isDarkMode = () => {
   return true; // 常にダークモード（カーソルを水色に）
 };
+
+// ダークモード向けのカスタムハイライトスタイルを定義
+const darkHighlightStyle = HighlightStyle.define([
+  { tag: tags.keyword, color: "#ff79c6" },
+  { tag: tags.comment, color: "#6272a4", fontStyle: "italic" },
+  { tag: tags.string, color: "#f1fa8c" },
+  { tag: tags.function(tags.variableName), color: "#50fa7b" },
+  { tag: tags.number, color: "#bd93f9" },
+  { tag: tags.operator, color: "#ff79c6" },
+  { tag: tags.className, color: "#8be9fd" },
+  { tag: tags.propertyName, color: "#66d9ef" },
+  { tag: tags.typeName, color: "#8be9fd" },
+  { tag: tags.definition(tags.variableName), color: "#50fa7b" },
+  { tag: tags.variableName, color: "#f8f8f2" },
+  { tag: tags.angleBracket, color: "#ff79c6" },
+  { tag: tags.tagName, color: "#ff79c6" },
+  { tag: tags.attributeName, color: "#50fa7b" },
+  { tag: tags.labelName, color: "#8be9fd" },
+  { tag: tags.literal, color: "#bd93f9" },
+  { tag: tags.meta, color: "#6272a4" },
+  { tag: tags.documentMeta, color: "#6272a4", fontStyle: "italic" },
+  { tag: tags.bool, color: "#bd93f9" },
+  { tag: tags.null, color: "#bd93f9" },
+  { tag: tags.special(tags.variableName), color: "#8be9fd" },
+  { tag: tags.special(tags.string), color: "#f1fa8c" },
+  { tag: tags.regexp, color: "#f1fa8c" },
+  { tag: tags.escape, color: "#ff79c6" }
+]);
 
 // エディタの設定と初期化
 export function setupEditor(documentManager: DocumentManager) {
@@ -60,8 +89,14 @@ export function setupEditor(documentManager: DocumentManager) {
     }
   });
   
+  // ハイライト表示の状態を管理する変数
+  let highlightEnabled = true;
+  
+  // シンタックスハイライトの拡張機能を格納する変数
+  const syntaxHighlightExtension = syntaxHighlighting(darkHighlightStyle);
+  
   // エディタの拡張機能
-  const extensions: Extension[] = [
+  let extensions: Extension[] = [
     lineNumbers(),
     highlightActiveLineGutter(),
     history(),
@@ -106,8 +141,8 @@ export function setupEditor(documentManager: DocumentManager) {
     bracketMatching(),
     // インデント検出
     indentOnInput(),
-    // シンタックスハイライト
-    syntaxHighlighting(defaultHighlightStyle),
+    // シンタックスハイライト（ダークモード向けのカスタムスタイル）
+    syntaxHighlightExtension,
     // コード折りたたみ
     foldGutter(),
     // 言語サポート（JavaScript構文）
@@ -276,6 +311,48 @@ export function setupEditor(documentManager: DocumentManager) {
   const view = new EditorView({
     state,
     parent: document.getElementById("editor") as HTMLElement
+  });
+
+  // ハイライト切り替えボタンのイベントリスナーを設定
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleHighlightBtn = document.getElementById('toggle-highlight-btn');
+    if (toggleHighlightBtn) {
+      toggleHighlightBtn.classList.add('active');
+      
+      toggleHighlightBtn.addEventListener('click', () => {
+        highlightEnabled = !highlightEnabled;
+        
+        // ボタンの外観を更新
+        if (highlightEnabled) {
+          toggleHighlightBtn.classList.add('active');
+          toggleHighlightBtn.classList.remove('inactive');
+        } else {
+          toggleHighlightBtn.classList.add('inactive');
+          toggleHighlightBtn.classList.remove('active');
+        }
+        
+        // ハイライトスタイルを切り替え
+        const currentExtensions = view.state.facet(EditorView.contentAttributes);
+        
+        if (highlightEnabled) {
+          // ハイライトを有効化
+          const transaction = view.state.update({
+            effects: StateEffect.appendConfig.of(syntaxHighlighting(darkHighlightStyle))
+          });
+          view.dispatch(transaction);
+        } else {
+          // ハイライトを無効化 - 全ての設定を再構築
+          const filteredExtensions = extensions.filter(ext => 
+            ext !== syntaxHighlightExtension
+          );
+          
+          const transaction = view.state.update({
+            effects: StateEffect.reconfigure.of(filteredExtensions)
+          });
+          view.dispatch(transaction);
+        }
+      });
+    }
   });
 
   // ダークモード変更を検出してエディタを更新

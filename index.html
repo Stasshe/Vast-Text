@@ -145,6 +145,26 @@
     .minimap-line {
       margin-bottom: 1px;
     }
+
+    /* ハイライト切り替えボタンのスタイル */
+    #toggle-highlight-btn {
+      transition: all 0.3s ease;
+    }
+    
+    #toggle-highlight-btn.active {
+      background-color: #3b82f6;
+      color: white;
+    }
+    
+    #toggle-highlight-btn.inactive {
+      background-color: #e5e7eb;
+      color: #4b5563;
+    }
+    
+    .dark #toggle-highlight-btn.inactive {
+      background-color: #4b5563;
+      color: #e5e7eb;
+    }
   </style>
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/fix.css">
@@ -161,6 +181,9 @@
         <div class="flex space-x-2">
           <button id="new-doc-btn" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
             +New
+          </button>
+          <button id="toggle-highlight-btn" class="px-3 py-1 rounded active" title="ハイライト表示の切り替え">
+            <span>HL</span>
           </button>
           <button id="toggle-sidebar-btn" class="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">
             ≡
@@ -222,6 +245,16 @@
           }
         });
       }, 500);
+    });
+    
+    // ハイライトボタンの初期設定
+    document.addEventListener('DOMContentLoaded', () => {
+      // ハイライトボタンの初期状態を設定
+      const highlightBtn = document.getElementById('toggle-highlight-btn');
+      if (highlightBtn) {
+        highlightBtn.classList.add('active');
+        highlightBtn.classList.remove('inactive');
+      }
     });
   </script>
 </body>
