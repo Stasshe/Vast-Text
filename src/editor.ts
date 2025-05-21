@@ -83,9 +83,43 @@ export function setupEditor(documentManager: DocumentManager) {
         }
       }
     }),
+    // スムーススクロール設定
+    EditorView.theme({
+      "&": {
+        scrollBehavior: "smooth", // スムーススクロールを有効化
+        scrollbarWidth: "thin"    // スクロールバーを細くする
+      },
+      ".cm-scroller": {
+        overflow: "auto",
+        scrollbarWidth: "thin",
+        scrollBehavior: "smooth"
+      }
+    }),
     darkTheme,
     waterCursorTheme,
     EditorView.contentAttributes.of({style: "caret-color: #38bdf8;"}),
+    // iPad/タブレット向けのタッチ操作最適化
+    EditorView.domEventHandlers({
+      touchstart(event, view) {
+        console.log('エディタのタッチイベント開始');
+        return false; // イベントを伝搬させる
+      },
+      touchmove(event, view) {
+        // タッチデバイスでのスクロールを改善
+        if (event.touches && event.touches.length === 1) {
+          // ミニマップ更新のためのカスタムイベントを発火
+          try {
+            const customEvent = new CustomEvent('editor-scroll-update', { 
+              detail: { view: view } 
+            });
+            document.dispatchEvent(customEvent);
+          } catch (error) {
+            console.error('タッチスクロール中のイベント発火エラー:', error);
+          }
+        }
+        return false; // イベントを伝搬させる
+      }
+    }),
   ];
 
   // エディタの初期状態

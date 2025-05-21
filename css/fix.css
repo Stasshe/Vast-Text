@@ -30,6 +30,64 @@ body.fix-scroll {
   box-shadow: 0 0 3px #38bdf8 !important;
 }
 
+/* ミニマップカーソルの強化スタイル */
+.minimap-cursor {
+  position: absolute;
+  right: 0;
+  width: 100% !important; /* 幅を100%に変更して全幅を覆う */
+  background-color: rgba(56, 189, 248, 0.25) !important; /* 水色を使用 */
+  border-right: 3px solid #38bdf8 !important; /* 右側に目立つボーダー */
+  pointer-events: none;
+  z-index: 10;
+  box-shadow: 0 0 4px rgba(56, 189, 248, 0.5) !important; /* 光るエフェクト */
+  transition: top 0.05s ease-out, background-color 0.2s, box-shadow 0.2s; /* スクロールをスムーズに */
+  will-change: top; /* GPU支援のヒント */
+}
+
+/* ドキュメントが編集モードの時にミニマップカーソルを強調 */
+.is-editing .minimap-cursor {
+  background-color: rgba(56, 189, 248, 0.35) !important;
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.7) !important;
+}
+
+/* タッチデバイス最適化 */
+@media (pointer: coarse) {
+  /* タッチデバイス向けにミニマップを大きくする */
+  #minimap {
+    min-width: 40px !important;
+    cursor: pointer;
+    opacity: 0.9 !important; /* よりはっきり表示 */
+  }
+  
+  /* タッチデバイス向けにミニマップカーソルを大きくする */
+  .minimap-cursor {
+    width: 100% !important;
+    min-height: 40px !important; /* 最小の高さを設定してタッチしやすく */
+    border-right: 4px solid #38bdf8 !important;
+    box-shadow: 0 0 6px rgba(56, 189, 248, 0.7) !important;
+  }
+  
+  /* エディタのスクロールをスムーズに */
+  #editor, .cm-scroller {
+    -webkit-overflow-scrolling: touch !important; /* iOSでのスクロールを改善 */
+    scroll-behavior: smooth !important;
+    overscroll-behavior: none !important; /* バウンス効果を防止 */
+    touch-action: pan-y !important; /* 縦スクロールのみを許可 */
+  }
+  
+  /* ミニマップライン高さを大きくして視認性向上 */
+  .minimap-line {
+    height: 3px !important;
+    margin-bottom: 1px !important;
+  }
+  
+  /* タッチ操作時のハイライト表示を防止 */
+  #minimap, #editor, .cm-content {
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+  }
+}
+
 /* エディター全体のコンテナ要素も強制的にダークモードに */
 #editor {
   background-color: #121212 !important;

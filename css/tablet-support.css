@@ -1,0 +1,90 @@
+/**
+ * iPad/タブレット用の最適化スタイル
+ */
+
+/* iOSでのスクロールとタッチ動作の改善 */
+html, body {
+  overscroll-behavior: none;
+  height: 100%;
+  position: fixed;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* エディタのスクロール特性を改善 */
+#editor, .cm-scroller {
+  -webkit-overflow-scrolling: touch !important;
+  scroll-behavior: smooth !important;
+  scrollbar-width: thin;
+  touch-action: pan-y;
+}
+
+/* ミニマップの視認性と操作性を向上 */
+#minimap {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: rgba(20, 20, 20, 0.98) !important; /* より暗い背景 */
+}
+
+/* ミニマップをタップしたときの効果 */
+#minimap:active {
+  opacity: 1 !important;
+}
+
+/* ミニマップのカーソルをタップ中に強調 */
+#minimap:active .minimap-cursor {
+  background-color: rgba(56, 189, 248, 0.5) !important;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.9) !important;
+}
+
+/* ミニマップ内の行表示を最適化 */
+.minimap-line {
+  margin: 0 !important;
+  border-radius: 1px;
+}
+
+/* コードミラーのスクロールバーを非表示（ミニマップを使うため） */
+.cm-scroller::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+.cm-scroller::-webkit-scrollbar-thumb {
+  background-color: rgba(56, 189, 248, 0.3) !important;
+  border-radius: 3px;
+}
+
+/* アクティブな行のハイライトを強化 */
+.cm-activeLine {
+  background-color: rgba(56, 189, 248, 0.1) !important;
+}
+
+/* ミニマップとエディタの同期を強化するスタイル */
+#minimap {
+  overscroll-behavior: none;
+  touch-action: pan-y pinch-zoom;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ミニマップ内のラインをより視認しやすく */
+.minimap-line {
+  transition: background-color 0.2s ease;
+  border-radius: 0;
+  margin: 0;
+}
+
+/* ミニマップハイライトカーソルの最適化 */
+.minimap-cursor {
+  transition: top 0.05s ease-out, height 0.1s ease-out; 
+  transform: translateZ(0); /* ハードウェアアクセラレーションを強制 */
+  backface-visibility: hidden; /* 余計な再描画を防止 */
+}
+
+/* エディタのスクロール最適化 */
+.cm-scroller {
+  overscroll-behavior: none;
+  scroll-behavior: smooth;
+  will-change: scroll-position;
+  -webkit-overflow-scrolling: touch;
+}
