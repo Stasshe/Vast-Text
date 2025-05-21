@@ -6,7 +6,8 @@ const urlsToCache = [
   '/index.html',
   '/js/app.js',
   '/css/main.css',
-  '/css/tailwind.output.css'
+  '/css/tailwind.output.css',
+  '/css/'
 ];
 
 // インストール時にリソースをキャッシュ
