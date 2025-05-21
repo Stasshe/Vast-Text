@@ -1,4 +1,4 @@
-/*
+
 // service-worker.js
 const CACHE_NAME = 'vast-text-v1';
 const urlsToCache = [
@@ -68,4 +68,3 @@ self.addEventListener('activate', (event) => {
     })
   );
 });
-*/
