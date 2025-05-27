@@ -1,0 +1,49 @@
+.
+├── CERTIFICATION.md
+├── css
+│   ├── autocomplete-style.css
+│   ├── core-cursor.css
+│   ├── cursor-fix.css
+│   ├── fix.css
+│   ├── horizontal-scroll-fix.css
+│   ├── main.css
+│   ├── tablet-support.css
+│   ├── tailwind.css
+│   ├── tailwind.output.css
+│   └── ultimate-cursor-fix.css
+├── index.html
+├── js
+│   ├── app.js
+│   ├── document-manager.js
+│   ├── editor.js
+│   ├── keymap-extensions.js
+│   ├── minimap.js
+│   └── ui.js
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── public
+│   ├── icons
+│   │   ├── android-chrome-192x192.png
+│   │   ├── android-chrome-512x512.png
+│   │   ├── apple-touch-icon.png
+│   │   ├── favicon-16x16.png
+│   │   ├── favicon-32x32.png
+│   │   ├── favicon.ico
+│   │   └── site.webmanifest
+│   ├── manifest.json
+│   └── service-worker.js
+├── src
+│   ├── app.ts
+│   ├── document-manager.ts
+│   ├── editor.ts
+│   ├── keymap-extensions.ts
+│   ├── minimap.ts
+│   ├── style.css
+│   └── ui.ts
+├── tailwind.config.js
+├── tree.txt
+├── tsconfig.json
+└── vite.config.js
+
+5 directories, 41 files
